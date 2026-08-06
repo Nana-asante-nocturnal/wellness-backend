@@ -567,11 +567,17 @@ async def _handle_neuro_message(ws: WebSocket, frame_data: dict) -> None:
         if state.current_test:
             if state.current_test == "finger_nose":
                 if state.trajectories:
+                    traj = [(e["x"], e["y"], e["ts"]) for e in state.trajectories]
+                    nose_pos = (state.trajectories[0]["nose_x"], state.trajectories[0]["nose_y"])
+                    touch_idx = -1
+                    if traj:
+                        dists = [((p[0] - nose_pos[0])**2 + (p[1] - nose_pos[1])**2) for p in traj]
+                        touch_idx = dists.index(min(dists))
                     trial = {
                         "side": state.test_side,
-                        "trajectory": [(e["x"], e["y"], e["ts"]) for e in state.trajectories],
-                        "nose_pos": (state.trajectories[0]["nose_x"], state.trajectories[0]["nose_y"]),
-                        "touch_frame_idx": -1,
+                        "trajectory": traj,
+                        "nose_pos": nose_pos,
+                        "touch_frame_idx": touch_idx,
                     }
                     state.finger_nose_results = assess_finger_to_nose([trial])
                 await ws.send_json({"type": "neuro_result",
