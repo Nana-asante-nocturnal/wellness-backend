@@ -625,11 +625,11 @@ def _handle_finger_nose_frame(state: NeuroSessionState, data: dict) -> None:
     
     entry = {
         "side": side,
-        "x": point.get("x", 0),
-        "y": point.get("y", 0),
+        "x": point.get("x", 0) * 640,
+        "y": point.get("y", 0) * 480,
         "ts": ts,
-        "nose_x": nose.get("x", 0),
-        "nose_y": nose.get("y", 0),
+        "nose_x": nose.get("x", 0) * 640,
+        "nose_y": nose.get("y", 0) * 480,
         "phase": phase,
     }
     state.trajectories.append(entry)
