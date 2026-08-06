@@ -9,10 +9,10 @@ TARGET_FPS = 30                       # target webcam framerate (never assumed f
 
 # --- Heart Rate (rPPG) ---
 BANDPASS_LOW_HZ = 0.7                 # 42 BPM lower bound
-BANDPASS_HIGH_HZ = 4.0                # 240 BPM upper bound
+BANDPASS_HIGH_HZ = 2.5                # 150 BPM upper bound (lowered to filter noise)
 BANDPASS_ORDER = 4                    # Butterworth filter order
 MIN_SIGNAL_SECONDS = 10.0             # minimum buffered signal before estimating BPM
-MAX_HEART_RATE_BPM = 240.0            # physiologically plausible ceiling
+MAX_HEART_RATE_BPM = 150.0            # physiologically plausible ceiling for sitting
 PEAK_MIN_DISTANCE_SEC = 60.0 / MAX_HEART_RATE_BPM  # minimum seconds between peaks
 
 # --- Respiratory Rate (from rPPG signal) ---

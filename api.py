@@ -165,6 +165,12 @@ def _process_heart_rate(state: SessionState, ts: float) -> dict:
         if bpm is not None:
             hr_status = "ok"
             state.bpm_history.append((ts, bpm))
+            
+            cutoff = ts - 5.0
+            recent_bpms = [b[1] for b in state.bpm_history if b[0] >= cutoff]
+            if recent_bpms:
+                bpm = sum(recent_bpms) / len(recent_bpms)
+                
             peaks = detect_pulse_peaks(np.array(state.filtered_signals), state.fs)
             signal_duration = len(state.filtered_signals) / state.fs
             state.peak_times = [ts - signal_duration + p for p in peaks]
