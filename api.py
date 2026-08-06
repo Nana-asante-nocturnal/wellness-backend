@@ -595,6 +595,13 @@ async def _handle_neuro_message(ws: WebSocket, frame_data: dict) -> None:
                                     "test": "finger_nose",
                                     "data": state.finger_nose_results})
             elif state.current_test == "dysdiadochokinesia":
+                if len(state.angle_timestamps) >= 2:
+                    fs = 1.0 / max(np.mean(np.diff(state.angle_timestamps[-30:])), 0.001)
+                else:
+                    fs = 30.0
+                if state.palm_angle_buffer:
+                    state.ddk_results[state.test_side] = assess_dysdiadochokinesia(
+                        state.palm_angle_buffer, fs, state.test_side)
                 await ws.send_json({"type": "neuro_result",
                                     "test": "dysdiadochokinesia",
                                     "data": state.ddk_results})
@@ -646,13 +653,6 @@ def _handle_ddk_frame(state: NeuroSessionState, data: dict) -> None:
     if angle is not None:
         state.palm_angle_buffer.append(angle)
         state.angle_timestamps.append(ts)
-    if state.test_phase == "complete" or data.get("phase") == "complete":
-        if len(state.angle_timestamps) >= 2:
-            fs = 1.0 / max(np.mean(np.diff(state.angle_timestamps[-30:])), 0.001)
-        else:
-            fs = 30.0
-        state.ddk_results[side] = assess_dysdiadochokinesia(
-            state.palm_angle_buffer, fs, side)
 
 
 def _handle_romberg_frame(state: NeuroSessionState, data: dict) -> None:
