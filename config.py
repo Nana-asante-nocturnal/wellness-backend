@@ -60,7 +60,7 @@ DISTANCE_NEAR_THRESHOLD = 1.15     # ratio above this = closer than calibration
 CALIBRATION_DURATION_SEC = 90.0       # baseline calibration period in seconds
 
 # --- API ---
-CORS_ORIGINS = ["http://localhost:5173", "http://localhost:3000"]
+CORS_ORIGINS = ["http://localhost:5173", "http://localhost:3000", "https://wellness-frontend-xi.vercel.app", "*"]
 WS_HEARTBEAT_SEC = 5.0                # WebSocket keepalive interval
 WS_MAX_FRAME_AGE_SEC = 2.0            # discard frames older than this when processing
 
