@@ -186,6 +186,11 @@ def _process_respiratory(state: SessionState, ts: float) -> dict:
         brpm = estimate_breathing_rate(np.array(state.resp_signal), state.fs)
         if brpm is not None:
             state.resp_history.append((ts, brpm))
+            
+            cutoff = ts - 10.0
+            recent_brpms = [b[1] for b in state.resp_history if b[0] >= cutoff]
+            if recent_brpms:
+                brpm = sum(recent_brpms) / len(recent_brpms)
     status = "ok" if brpm is not None else "insufficient_data"
     return {"brpm": round(brpm, 1) if brpm is not None else None, "status": status}
 

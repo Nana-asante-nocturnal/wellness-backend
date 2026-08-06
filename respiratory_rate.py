@@ -72,6 +72,14 @@ def estimate_breathing_rate(filtered_signal: np.ndarray, fs: float) -> float | N
     valid = (freqs >= RESP_BANDPASS_LOW_HZ) & (freqs <= RESP_BANDPASS_HIGH_HZ)
     if not np.any(valid) or np.max(fft_vals[valid]) < 1e-8:
         return None
+        
     peak_idx = np.argmax(fft_vals[valid])
+    peak_val = fft_vals[valid][peak_idx]
+    mean_val = np.mean(fft_vals[valid])
+    
+    # SNR check: if peak is not distinctly above the noise floor (e.g. breath holding)
+    if peak_val < mean_val * 1.8:
+        return 0.0
+        
     peak_freq = freqs[valid][peak_idx]
     return peak_freq * 60.0
